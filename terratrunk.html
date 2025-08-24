@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO and Metadata -->
+    <title>The TerraTrunk Project: A Thermodynamic Exploration</title>
+    <meta name="description" content="An advanced look into the TerraTrunk, an open-source evaporative cooler. Explore interactive thermodynamic simulations, mathematical deep dives, and the complete project build log.">
+    <meta name="keywords" content="TerraTrunk, thermodynamics, evaporative cooling, psychrometrics, enthalpy, off-grid, sustainable technology, ESP32, data visualization, physics simulation">
+    <meta name="author" content="Aryan, Soham, Pavan, Chaithanya">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://example.com/">
+    <meta property="og:title" content="The TerraTrunk Project: A Thermodynamic Exploration">
+    <meta property="og:description" content="Explore interactive thermodynamic simulations of an off-grid evaporative cooler.">
+    <meta property="og:image" content="https://i.postimg.cc/5tQhFpsS/day-3.jpg">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://example.com/">
+    <meta property="twitter:title" content="The TerraTrunk Project: A Thermodynamic Exploration">
+    <meta property="twitter:description" content="Explore interactive thermodynamic simulations of an off-grid evaporative cooler.">
+    <meta property="twitter:image" content="https://i.postimg.cc/5tQhFpsS/day-3.jpg">
+
+    <!-- Font Optimization -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- MathJax for LaTeX Rendering -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: #1C1917; /* stone-900 */
+            color: #E7E5E4; /* stone-200 */
+            background-image: radial-gradient(#44403c 1px, transparent 1px);
+            background-size: 20px 20px;
+            animation: background-pan 30s linear infinite;
+        }
+        @keyframes background-pan {
+            from { background-position: 0 0; }
+            to { background-position: -400px -400px; }
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .prose {
+            font-family: 'Crimson Text', serif;
+            color: #D6D3D1; /* stone-300 */
+        }
+        
+        /* --- General UI/UX & Accessibility Styles --- */
+        .skip-link { 
+            position: absolute; 
+            top: -100px; 
+            left: 0; 
+            background: #F97316; 
+            color: white; 
+            padding: 1rem; 
+            z-index: 100; 
+            transition: top 0.3s ease-in-out; 
+        }
+        .skip-link:focus { 
+            top: 0; 
+        }
+        .nav-scrolled { background-color: rgba(28, 25, 23, 0.8); backdrop-filter: blur(10px); box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); }
+        .section-header-gradient { background: linear-gradient(90deg, #F97316, #FB923C); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        /* --- Animation Styles --- */
+        .fade-in-section { opacity: 0; transform: translateY(25px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+        .fade-in-section.is-visible { opacity: 1; transform: translateY(0); }
+        .header-gradient { background: linear-gradient(120deg, #0c0a09, #44403c, #0c0a09); background-size: 200% 200%; animation: gradient-animation 15s ease infinite; }
+        @keyframes gradient-animation { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes fade-in-down { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fade-in-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in-down { animation: fade-in-down 0.8s ease-out forwards; } .animate-fade-in-up { animation: fade-in-up 0.8s ease-out forwards; }
+        
+        /* --- Physics Infographic Styles --- */
+        #thermodynamic-engine {
+            overflow: visible;
+            background: #292524;
+            border-radius: 0.5rem;
+        }
+        .energy-transfer-pulse {
+            animation: transfer-pulse 0.5s ease-out forwards;
+            transform-origin: center;
+        }
+        @keyframes transfer-pulse {
+            from { r: 0; opacity: 0.7; }
+            to { r: 15px; opacity: 0; }
+        }
+        .water-vapor {
+            animation: vapor-rise 5s ease-in forwards;
+        }
+        @keyframes vapor-rise {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-100px); }
+        }
+
+        /* --- Technical Deep Dive & Simulator --- */
+        .formula-box { background-color: #292524; border-left: 4px solid #F97316; padding: 1.5rem; border-radius: 0.5rem; margin-top: 1rem; }
+        .slider-label { font-size: 0.9rem; font-weight: 500; color: #A8A29E; }
+        .slider-value { font-weight: 600; color: #F97316; }
+        input[type=range] { -webkit-appearance: none; background: transparent; width: 100%; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%; background: #F97316; cursor: pointer; margin-top: -6px; transition: transform 0.2s; }
+        input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #57534E; border-radius: 5px; }
+
+        /* --- Original Circuit Diagram Styles --- */
+        .box { stroke: #4A5568; stroke-width: 1.5; rx: 10; fill: url(#boxGradient); transition: all 0.2s ease-in-out; }
+        .box-text { font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 700; text-anchor: middle; fill: #1A202C;}
+        .label-text { font-family: 'Space Grotesk', sans-serif; font-size: 11px; font-weight: 500; fill: #A8A29E; }
+        .pin-label { font-family: 'Space Grotesk', sans-serif; font-size: 10px; font-weight: 500; fill: #718096; }
+        .wire { stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+        .wire-12v { stroke: #c53030; } .wire-5v { stroke: #dd6b20; } .wire-gnd { stroke: #2d3748; } .wire-signal { stroke: #2b6cb0; }
+        .marker-dot { stroke-width: 2; }
+        .component { cursor: pointer; }
+        .component:hover .box, .component:focus .box { stroke: #EA580C; stroke-width: 2.5; transform: translateY(-2px); outline: none; }
+        .component.selected .box { stroke: #EA580C; stroke-width: 3; }
+        .copy-button { position: absolute; top: 0.75rem; right: 0.75rem; background-color: #44403C; color: white; border: none; padding: 0.25rem 0.75rem; border-radius: 0.375rem; cursor: pointer; font-size: 0.8rem; transition: background-color 0.2s; }
+        .copy-button:hover { background-color: #292524; }
+        pre { position: relative; background-color: #1C1917; color: #e2e8f0; padding: 1.5rem; border-radius: 0.5rem; overflow-x: auto; font-size: 0.9em; }
+        code { font-family: 'Fira Code', 'Courier New', monospace; }
+
+    </style>
+</head>
+<body class="bg-stone-900 text-stone-200">
+
+    <a href="#main-content" id="skip-link" class="skip-link">Skip to main content</a>
+
+    <nav id="navbar" class="sticky top-0 z-50 transition-all duration-300">
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <a href="#" class="text-xl font-bold text-stone-100">TerraTrunk Project</a>
+            <div class="hidden md:flex space-x-6 text-sm font-medium text-stone-300">
+                <a href="#about" class="hover:text-orange-400">Principle</a>
+                <a href="#thermo-engine" class="hover:text-orange-400">Engine</a>
+                <a href="#deep-dive" class="hover:text-orange-400">Deep Dive</a>
+                <a href="#simulator" class="hover:text-orange-400">Simulator</a>
+                <a href="#build-log" class="hover:text-orange-400">Build Log</a>
+                <a href="#team" class="hover:text-orange-400">Team</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="bg-stone-950 shadow-lg header-gradient">
+        <div class="container mx-auto px-6 py-16 text-center">
+            <h1 class="text-4xl md:text-6xl font-bold text-stone-100 animate-fade-in-down">The TerraTrunk Project</h1>
+            <p class="text-stone-300 mt-4 text-lg md:text-xl max-w-3xl mx-auto animate-fade-in-up" style="animation-delay: 0.2s;">An open-source exploration into the bizarre and beautiful physics of evaporative cooling and applied thermodynamics.</p>
+        </div>
+    </header>
+
+    <main id="main-content" class="container mx-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-8" tabindex="-1">
+
+        <div class="lg:col-span-2">
+            
+            <section id="about" class="bg-stone-900 p-8 rounded-xl shadow-lg mb-8 prose prose-invert max-w-none fade-in-section">
+                <h2 class="text-3xl font-bold border-b-2 border-orange-800 pb-3 section-header-gradient">The Governing Principle</h2>
+                <p>The TerraTrunk is more than a device; it is a physical manifestation of fundamental thermodynamic principles. At its core, it exploits the **enthalpy of vaporization**—the immense energy a liquid absorbs from its surroundings to transition into a gaseous state. This is not merely 'drying'; it is an aggressive energy transfer.</p>
+                <p>When dry, high-energy air molecules (representing higher temperature) are forced through a water-saturated medium, they collide with lower-energy water molecules. During this interaction, the most energetic water molecules achieve escape velocity, transitioning into vapor. To do so, they must steal thermal energy from the surrounding air molecules. The result is a phase change in the water and a corresponding net loss of kinetic energy in the air, which we perceive as a drop in temperature. The terracotta structure acts as a thermal flywheel, its high thermal mass resisting rapid temperature fluctuations and stabilizing the cooled internal environment.</p>
+            </section>
+            
+            <section id="thermo-engine" class="bg-stone-900 p-8 rounded-xl shadow-lg mb-8 fade-in-section">
+                <h2 class="text-3xl font-bold border-b-2 border-orange-800 pb-3 mb-6 section-header-gradient">The Thermodynamic Engine</h2>
+                <div class="w-full h-auto">
+                    <svg id="thermodynamic-engine" viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <radialGradient id="hot-grad" cx="50%" cy="50%" r="50%">
+                                <stop offset="0%" stop-color="#FECACA" />
+                                <stop offset="100%" stop-color="#DC2626" />
+                            </radialGradient>
+                            <radialGradient id="cool-grad" cx="50%" cy="50%" r="50%">
+                                <stop offset="0%" stop-color="#BFDBFE" />
+                                <stop offset="100%" stop-color="#3B82F6" />
+                            </radialGradient>
+                            <radialGradient id="water-grad" cx="50%" cy="50%" r="50%">
+                                <stop offset="0%" stop-color="#A5F3FC" />
+                                <stop offset="100%" stop-color="#0EA5E9" />
+                            </radialGradient>
+                        </defs>
+                        <!-- Labels -->
+                        <text x="100" y="40" fill="#A8A29E" text-anchor="middle" font-size="14">HIGH KINETIC ENERGY INTAKE</text>
+                        <text x="400" y="40" fill="#FB923C" text-anchor="middle" font-size="14">PHASE CHANGE MATRIX</text>
+                        <text x="700" y="40" fill="#A8A29E" text-anchor="middle" font-size="14">LOW KINETIC ENERGY EXHAUST</text>
+                        
+                        <!-- Evaporation Matrix -->
+                        <g id="water-molecules"></g>
+                        
+                        <!-- Particles -->
+                        <g id="air-particles"></g>
+                        <g id="vapor-particles"></g>
+                        <g id="energy-transfers"></g>
+                    </svg>
+                </div>
+            </section>
+            
+            <section id="deep-dive" class="bg-stone-900 p-8 rounded-xl shadow-lg mb-8 fade-in-section">
+                <h2 class="text-3xl font-bold border-b-2 border-orange-800 pb-3 mb-6 section-header-gradient">Technical Deep Dive</h2>
+                <div class="prose prose-invert max-w-none space-y-6">
+                    <p>The efficiency of an evaporative cooler is fundamentally limited by the psychrometric properties of the incoming air. The key performance indicator is the **wet-bulb depression**, which is the difference between the dry-bulb temperature ($$T_{db}$$) and the wet-bulb temperature ($$T_{wb}$$). A larger depression, typical in dry climates, allows for more significant cooling.</p>
+                    
+                    <div class="formula-box">
+                        <h3 class="text-lg font-semibold text-orange-400 mt-0">Wet-Bulb Temperature Approximation</h3>
+                        <p class="text-sm">We can approximate the wet-bulb temperature using Stull's formula, which provides a reasonably accurate result without complex iterative calculations:</p>
+                        $$
+                        \begin{split}
+                        T_{wb} = & T_{db} \cdot \arctan{[0.151977(RH\% + 8.313659)^{1/2}]} \\
+                        & + \arctan{(T_{db} + RH\%)} \\
+                        & - \arctan{(RH\% - 1.676331)} \\
+                        & + 0.00391838(RH\%)^{3/2} \cdot \arctan{(0.023101 \cdot RH\%)} \\
+                        & - 4.686035
+                        \end{split}
+                        $$
+                    </div>
+
+                    <div class="formula-box">
+                        <h3 class="text-lg font-semibold text-orange-400 mt-0">Cooling Efficiency</h3>
+                        <p class="text-sm">The theoretical outlet temperature ($$T_{out}$$) is a function of the cooler's saturation efficiency ($$\eta$$), which measures how closely the outlet air temperature approaches the wet-bulb temperature:</p>
+                        $$ T_{out} = T_{db} - \eta \cdot (T_{db} - T_{wb}) $$
+                    </div>
+                </div>
+            </section>
+
+            <section id="simulator" class="bg-stone-900 p-8 rounded-xl shadow-lg mb-8 fade-in-section">
+                <h2 class="text-3xl font-bold border-b-2 border-orange-800 pb-3 mb-6 section-header-gradient">Cooling Simulator</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <div class="mb-4">
+                            <label for="temp-slider" class="slider-label">Ambient Temperature: <span id="temp-value" class="slider-value">35°C</span></label>
+                            <input type="range" id="temp-slider" min="20" max="50" value="35" class="w-full">
+                        </div>
+                        <div class="mb-4">
+                            <label for="humidity-slider" class="slider-label">Relative Humidity: <span id="humidity-value" class="slider-value">20%</span></label>
+                            <input type="range" id="humidity-slider" min="5" max="95" value="20" class="w-full">
+                        </div>
+                    </div>
+                    <div class="bg-stone-800 p-6 rounded-lg text-center">
+                        <p class="text-stone-400 text-sm">Predicted Outlet Temperature</p>
+                        <p id="output-temp" class="text-4xl font-bold text-orange-400 my-2">--.-- °C</p>
+                        <p id="efficiency" class="text-stone-300 text-sm">Saturation Efficiency: --%</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="documentation" class="bg-stone-900 p-8 rounded-xl shadow-lg mb-8 fade-in-section">
+                <h2 class="text-3xl font-bold border-b-2 border-orange-800 pb-3 mb-4 section-header-gradient">Documentation</h2>
+                <h3 class="text-2xl font-semibold text-orange-400 mt-6">Interactive Circuit Diagram</h3>
+                <p class="mb-4 text-stone-400">Click or use the Tab key to focus on any component in the diagram below to see its details.</p>
+                <div class="grid grid-cols-1 xl:grid-cols-5 gap-6">
+                    <div class="xl:col-span-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 850 550" class="w-full h-auto rounded-lg border-2 border-stone-700 bg-stone-100" aria-labelledby="circuit-title" role="img"><title id="circuit-title">Circuit diagram of the TerraTrunk electronics</title><defs><linearGradient id="boxGradient" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:#F7FAFC;"/><stop offset="100%" style="stop-color:#EDF2F7;"/></linearGradient><g id="icon-power"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></g><g id="icon-converter"><path d="M13 17h8m-8-5h8m-8-5h8M3 21V3l7 9-7 9z"></path></g><g id="icon-esp32"><rect x="2" y="7" width="20" height="12" rx="2"></rect><path d="M6 11h2M10 11h2M14 11h2M6 15h2M10 15h6"></path></g><g id="icon-relay"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></g><g id="icon-pump"><path d="M12 12c0-3.31 2.69-6 6-6s6 2.69 6 6-2.69 6-6 6"></path><path d="M12 12c0 3.31-2.69 6-6 6s-6-2.69-6-6 2.69-6 6-6"></path><path d="M12 12l6 6"></path><path d="M12 12l-6 6"></path><path d="M12 12l6-6"></path><path d="M12 12l-6-6"></path></g><g id="icon-dht11"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><path d="M9 9h6v6H9z"></path><line x1="12" y1="3" x2="12" y2="21"></line></g></defs><g id="power-supply" class="component" transform="translate(50, 50)" role="button" tabindex="0"><rect width="170" height="70" class="box"/><use href="#icon-power" transform="translate(15, 23) scale(1.2)" stroke="#4A5568" stroke-width="1.5" fill="none"/><text x="100" y="35" class="box-text">12V Power</text></g><g id="buck-converter" class="component" transform="translate(340, 50)" role="button" tabindex="0"><rect width="170" height="70" class="box"/><use href="#icon-converter" transform="translate(15, 23) scale(1.2)" stroke="#4A5568" stroke-width="1.5" fill="none"/><text x="105" y="35" class="box-text">Buck Converter</text><text x="10" y="18" class="pin-label">IN+</text><text x="10" y="52" class="pin-label">IN-</text><text x="160" y="18" class="pin-label" text-anchor="end">OUT+</text><text x="160" y="52" class="pin-label" text-anchor="end">OUT-</text></g><g id="esp32" class="component" transform="translate(50, 270)" role="button" tabindex="0"><rect width="170" height="90" class="box"/><use href="#icon-esp32" transform="translate(15, 33) scale(1.2)" stroke="#4A5568" stroke-width="1.5" fill="none"/><text x="100" y="45" class="box-text">ESP32</text><text x="160" y="30" class="pin-label" text-anchor="end">D23</text><text x="160" y="60" class="pin-label" text-anchor="end">D22</text><text x="10" y="20" class="pin-label">VIN</text><text x="10" y="70" class="pin-label">GND</text></g><g id="relay" class="component" transform="translate(340, 250)" role="button" tabindex="0"><rect width="170" height="110" class="box"/><use href="#icon-relay" transform="translate(15, 43) scale(1.2)" stroke="#4A5568" stroke-width="1.5" fill="none"/><text x="105" y="55" class="box-text">Relay Module</text><text x="10" y="20" class="pin-label">VCC</text><text x="10" y="40" class="pin-label">GND</text><text x="10" y="60" class="pin-label">IN</text><text x="160" y="30" class="pin-label" text-anchor="end">COM</text><text x="160" y="80" class="pin-label" text-anchor="end">NO</text></g><g id="pump" class="component" transform="translate(630, 380)" role="button" tabindex="0"><rect width="170" height="70" class="box"/><use href="#icon-pump" transform="translate(15, 23) scale(1.2)" stroke="#4A5568" stroke-width="1.5" fill="none"/><text x="105" y="35" class="box-text">12V Water Pump</text><text x="10" y="20" class="pin-label">+</text><text x="10" y="50" class="pin-label">-</text></g><g id="dht11" class="component" transform="translate(50, 400)" role="button" tabindex="0"><rect width="170" height="70" class="box"/><use href="#icon-dht11" transform="translate(15, 23) scale(1.2)" stroke="#4A5568" stroke-width="1.5" fill="none"/><text x="105" y="35" class="box-text">DHT11 Sensor</text><text x="160" y="20" class="pin-label" text-anchor="end">VCC</text><text x="160" y="35" class="pin-label" text-anchor="end">DATA</text><text x="160" y="50" class="pin-label" text-anchor="end">GND</text></g><path d="M 220 70 H 340" class="wire wire-12v" /><text x="270" y="65" class="label-text" fill="#4A5568">+12V</text><path d="M 220 100 H 340" class="wire wire-gnd" /><text x="270" y="115" class="label-text" fill="#4A5568">GND</text><path d="M 510 70 H 580" class="wire wire-5v" /><text x="535" y="65" class="label-text" fill="#4A5568">+5V</text><path d="M 510 100 H 580" class="wire wire-gnd" /><text x="535" y="115" class="label-text" fill="#4A5568">GND</text><path d="M 580 70 V 270 H 340" class="wire wire-5v" /><path d="M 580 70 H 600 V 180 H 90 V 290" class="wire wire-5v" /><circle cx="580" cy="70" r="4" class="marker-dot wire-5v" fill="white"/><path d="M 580 100 V 290 H 340" class="wire wire-gnd" /><path d="M 580 100 H 600 V 200 H 90 V 340" class="wire wire-gnd" /><circle cx="580" cy="100" r="4" class="marker-dot wire-gnd" fill="white"/><path d="M 220 300 H 340" class="wire wire-signal" /><text x="270" y="295" class="label-text" fill="#4A5568">Relay Signal</text><path d="M 220 330 H 260 V 435 H 220" class="wire wire-signal" /><text x="270" y="385" class="label-text" fill="#4A5568">DHT11 Data</text><path d="M 220 70 H 260 V 330 H 510" class="wire wire-12v" /><circle cx="260" cy="70" r="4" class="marker-dot wire-12v" fill="white"/><path d="M 510 280 H 570 V 400 H 630" class="wire wire-12v" /><path d="M 220 100 H 280 V 430 H 630" class="wire wire-gnd" /><circle cx="280" cy="100" r="4" class="marker-dot wire-gnd" fill="white"/><path d="M 580 70 V 160 H 260 V 420 H 220" class="wire wire-5v" /><path d="M 580 100 V 170 H 270 V 450 H 220" class="wire wire-gnd" /></svg>
+                    </div>
+                    <div id="details-panel" class="xl:col-span-2 bg-stone-800 p-4 rounded-lg h-fit" aria-live="polite">
+                        <h3 id="details-title" class="text-xl font-bold text-orange-400 mb-2">Component Details</h3>
+                        <p id="details-description" class="text-stone-300 mb-3 text-sm">Click on any component in the diagram to learn more.</p>
+                    </div>
+                </div>
+                <h3 class="text-2xl font-semibold text-orange-400 mt-8">ESP32 Code (Arduino IDE)</h3>
+                <div class="mt-4">
+                    <pre><button class="copy-button" onclick="copyCode(this)">Copy</button><code class="language-cpp">// Include necessary libraries
+#include "DHT.h"
+
+#define DHTPIN 22
+#define RELAY_PIN 23
+#define DHTTYPE DHT11
+
+DHT dht(DHTPIN, DHTTYPE);
+
+const float TEMP_THRESHOLD_HIGH = 28.0;
+const float TEMP_THRESHOLD_LOW = 26.0;
+bool pumpOn = false;
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(RELAY_PIN, OUTPUT);
+  dht.begin();
+  digitalWrite(RELAY_PIN, LOW);
+}
+
+void loop() {
+  delay(5000);
+  float humidity = dht.readHumidity();
+  float tempC = dht.readTemperature();
+
+  if (isnan(humidity) || isnan(tempC)) {
+    return;
+  }
+
+  if (!pumpOn && tempC > TEMP_THRESHOLD_HIGH) {
+    digitalWrite(RELAY_PIN, HIGH);
+    pumpOn = true;
+  } else if (pumpOn && tempC < TEMP_THRESHOLD_LOW) {
+    digitalWrite(RELAY_PIN, LOW);
+    pumpOn = false;
+  }
+}
+</code></pre>
+                </div>
+            </section>
+
+            <section id="build-log" class="bg-stone-900 p-8 rounded-xl shadow-lg mb-8 prose prose-invert max-w-none fade-in-section">
+                 <h2 class="text-3xl font-bold border-b-2 border-orange-800 pb-3 section-header-gradient">The Build Log</h2>
+                <article class="mt-6">
+                    <h3 class="text-2xl font-semibold text-orange-400">Day 1: Learning the Fundamentals</h3>
+                    <p class="text-sm text-stone-400">Posted on: August 22, 2025</p>
+                    <p>Our journey began with a fantastic learning session from our teacher. We started with the basics of electronics, learning how to control single and multiple LEDs. From there, we moved on to reading data from a light sensor and then tackled the DHT11 temperature and humidity sensor. We finished the day by learning how to control a fan with the ESP32. It was a packed day that gave us the foundation for everything to come!</p>
+                    <img src="https://i.postimg.cc/m2q1SgbN/day-1.jpg" alt="A breadboard with an ESP32, LEDs, and a DHT11 sensor, showcasing the initial electronics learning phase." class="rounded-lg mt-4 shadow-md build-log-img" width="800" height="600" loading="lazy" decoding="async">
+                </article>
+                <article class="mt-10 border-t border-stone-700 pt-8">
+                    <h3 class="text-2xl font-semibold text-orange-400">Day 2: Hands-On with Hardware</h3>
+                    <p class="text-sm text-stone-400">Posted on: August 23, 2025</p>
+                    <p>Today, we put our new knowledge into practice! We successfully controlled the 12V water pump using the relay and started constructing the main body of the TerraTrunk. It was incredible to see the physical structure taking shape while knowing we have the electronic controls ready to integrate. The project is really coming to life!</p>
+                    <img src="https://i.postimg.cc/ydPvJZCT/day2.jpg" alt="The terracotta body of the TerraTrunk being assembled, with wiring and components visible." class="rounded-lg mt-4 shadow-md build-log-img" width="800" height="600" loading="lazy" decoding="async">
+                </article>
+                <article class="mt-10 border-t border-stone-700 pt-8">
+                    <h3 class="text-2xl font-semibold text-orange-400">Day 3: Success! The TerraTrunk is Alive!</h3>
+                    <p class="text-sm text-stone-400">Posted on: August 24, 2025</p>
+                    <p>This was the big day! We finished the final assembly, carefully integrating the electronics package with the terracotta body and water circulation system. After uploading the final code, we held our breath and powered it on. It worked flawlessly! The pump activated, the DHT11 sensor started reporting data, and we could feel the cool air inside. A huge success for the entire team!</p>
+                    <img src="https://i.postimg.cc/5tQhFpsS/day-3.jpg" alt="The fully assembled and operational TerraTrunk cooler." class="rounded-lg mt-4 shadow-md build-log-img" width="800" height="600" loading="lazy" decoding="async">
+                </article>
+            </section>
+        </div>
+
+        <aside class="lg:col-span-1 h-fit sticky top-24">
+            <section id="team" class="bg-stone-900 p-6 rounded-xl shadow-lg mb-8 fade-in-section">
+                <h2 class="text-3xl font-bold border-b-2 border-orange-800 pb-3 mb-6 section-header-gradient">The Innovators</h2>
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="text-center group"><img src="https://i.postimg.cc/ZK3j32mR/aryan.jpg" alt="Team member Aryan" class="rounded-full mx-auto mb-2 w-24 h-24 object-cover border-4 border-stone-800 shadow-md group-hover:scale-105 transition-transform" width="96" height="96" loading="lazy" decoding="async"><p class="font-semibold">Aryan</p></div>
+                    <div class="text-center group"><img src="https://i.postimg.cc/sXq9G907/soham.jpg" alt="Team member Soham" class="rounded-full mx-auto mb-2 w-24 h-24 object-cover border-4 border-stone-800 shadow-md group-hover:scale-105 transition-transform" width="96" height="96" loading="lazy" decoding="async"><p class="font-semibold">Soham</p></div>
+                    <div class="text-center group"><img src="https://i.postimg.cc/X7wcX5KB/pavan.jpg" alt="Team member Pavan" class="rounded-full mx-auto mb-2 w-24 h-24 object-cover border-4 border-stone-800 shadow-md group-hover:scale-105 transition-transform" width="96" height="96" loading="lazy" decoding="async"><p class="font-semibold">Pavan</p></div>
+                    <div class="text-center group"><img src="https://i.postimg.cc/zfPT4FN6/chaithanya.jpg" alt="Team member Chaithanya" class="rounded-full mx-auto mb-2 w-24 h-24 object-cover border-4 border-stone-800 shadow-md group-hover:scale-105 transition-transform" width="96" height="96" loading="lazy" decoding="async"><p class="font-semibold">Chaithanya</p></div>
+                </div>
+            </section>
+        </aside>
+    </main>
+
+    <footer class="bg-stone-950 text-stone-400 mt-12 border-t border-stone-800">
+        <div class="container mx-auto px-6 py-4 text-center text-sm">
+            <p>&copy; 2025 The TerraTrunk Project. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const svgNS = "http://www.w3.org/2000/svg";
+
+        // --- Skip Link Accessibility ---
+        const skipLink = document.getElementById('skip-link');
+        const mainContent = document.getElementById('main-content');
+        if(skipLink && mainContent) {
+            skipLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                mainContent.setAttribute('tabindex', -1);
+                mainContent.focus();
+            });
+        }
+
+        // --- Physics Infographic Logic ---
+        const svg = document.getElementById('thermodynamic-engine');
+        if(svg) {
+            const airParticlesGroup = document.getElementById('air-particles');
+            const waterMoleculesGroup = document.getElementById('water-molecules');
+            const vaporParticlesGroup = document.getElementById('vapor-particles');
+            const energyTransfersGroup = document.getElementById('energy-transfers');
+            
+            const MATRIX_X_START = 250, MATRIX_WIDTH = 300;
+            const particles = [];
+            const waterMolecules = [];
+            
+            for(let i = 0; i < 50; i++) {
+                const waterEl = document.createElementNS(svgNS, "circle");
+                const x = MATRIX_X_START + Math.random() * MATRIX_WIDTH;
+                const y = 80 + Math.random() * 240;
+                waterEl.setAttribute('cx', x); waterEl.setAttribute('cy', y);
+                waterEl.setAttribute('r', 4); waterEl.setAttribute('fill', 'url(#water-grad)');
+                waterMoleculesGroup.appendChild(waterEl);
+                waterMolecules.push({el: waterEl, x, y, evaporated: false});
+            }
+
+            for (let i = 0; i < 25; i++) {
+                createAirParticle();
+            }
+
+            function createAirParticle(p) {
+                let particle = p;
+                if (!particle) {
+                    const el = document.createElementNS(svgNS, "circle");
+                    airParticlesGroup.appendChild(el);
+                    particle = { el };
+                    particles.push(particle);
+                }
+                particle.x = Math.random() * 200;
+                particle.y = 80 + Math.random() * 240;
+                particle.vx = 2 + Math.random() * 2;
+                particle.vy = (Math.random() - 0.5) * 2;
+                particle.energy = 'hot';
+                particle.el.setAttribute('r', 3 + Math.random() * 2);
+                particle.el.setAttribute('fill', 'url(#hot-grad)');
+            }
+
+            function animate() {
+                particles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+
+                    if (p.energy === 'hot' && p.x > MATRIX_X_START && p.x < (MATRIX_X_START + MATRIX_WIDTH)) {
+                        const nearbyWater = waterMolecules.find(w => !w.evaporated && Math.abs(w.x - p.x) < 20 && Math.abs(w.y - p.y) < 20);
+                        if (nearbyWater) {
+                            const transferEl = document.createElementNS(svgNS, "circle");
+                            transferEl.setAttribute('cx', p.x); transferEl.setAttribute('cy', p.y);
+                            transferEl.setAttribute('r', 0); transferEl.setAttribute('fill', 'none');
+                            transferEl.setAttribute('stroke', '#FDBA74'); transferEl.setAttribute('stroke-width', 2);
+                            transferEl.classList.add('energy-transfer-pulse');
+                            energyTransfersGroup.appendChild(transferEl);
+                            setTimeout(() => transferEl.remove(), 500);
+
+                            p.energy = 'cool';
+                            p.vx *= 0.5;
+                            p.el.setAttribute('fill', 'url(#cool-grad)');
+
+                            nearbyWater.evaporated = true;
+                            nearbyWater.el.style.display = 'none';
+                            const vaporEl = document.createElementNS(svgNS, "circle");
+                            vaporEl.setAttribute('cx', nearbyWater.x); vaporEl.setAttribute('cy', nearbyWater.y);
+                            vaporEl.setAttribute('r', 3); vaporEl.setAttribute('fill', '#A5F3FC');
+                            vaporEl.setAttribute('opacity', 0.8);
+                            vaporEl.classList.add('water-vapor');
+                            vaporParticlesGroup.appendChild(vaporEl);
+                            setTimeout(() => vaporEl.remove(), 5000);
+                            setTimeout(() => {
+                               nearbyWater.el.style.display = 'block';
+                               nearbyWater.evaporated = false;
+                            }, 10000 + Math.random() * 5000);
+                        }
+                    }
+
+                    if (p.x > 800) createAirParticle(p);
+                    
+                    p.el.setAttribute('cx', p.x);
+                    p.el.setAttribute('cy', p.y);
+                });
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        // --- Simulator Logic ---
+        const tempSlider = document.getElementById('temp-slider');
+        const humiditySlider = document.getElementById('humidity-slider');
+        
+        if(tempSlider && humiditySlider) {
+            const tempValue = document.getElementById('temp-value');
+            const humidityValue = document.getElementById('humidity-value');
+            const outputTemp = document.getElementById('output-temp');
+            const efficiencyEl = document.getElementById('efficiency');
+
+            function calculateCooling() {
+                const Tdb = parseFloat(tempSlider.value);
+                const RH = parseFloat(humiditySlider.value);
+
+                const Twb = Tdb * Math.atan(0.151977 * Math.pow(RH + 8.313659, 0.5)) + 
+                            Math.atan(Tdb + RH) - 
+                            Math.atan(RH - 1.676331) + 
+                            0.00391838 * Math.pow(RH, 1.5) * Math.atan(0.023101 * RH) - 
+                            4.686035;
+
+                const saturationEfficiency = 0.85;
+                const Tout = Tdb - (saturationEfficiency * (Tdb - Twb));
+                
+                efficiencyEl.textContent = `Saturation Efficiency: ${(saturationEfficiency * 100).toFixed(0)}%`;
+                outputTemp.textContent = `${Tout.toFixed(1)} °C`;
+            }
+            
+            tempSlider.addEventListener('input', () => { tempValue.textContent = `${tempSlider.value}°C`; calculateCooling(); });
+            humiditySlider.addEventListener('input', () => { humidityValue.textContent = `${humiditySlider.value}%`; calculateCooling(); });
+            calculateCooling();
+        }
+
+        // --- Intersection Observer for All Animations ---
+        const sections = document.querySelectorAll('.fade-in-section');
+        const animationObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15 });
+        sections.forEach(section => animationObserver.observe(section));
+    });
+    </script>
+</body>
+</html>
